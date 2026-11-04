@@ -33,45 +33,79 @@ The models were compared using evaluation metrics suitable for imbalanced classi
 
 ## Dataset
 
-**Source:** [Kaggle – Synthetic Transaction Monitoring Dataset (SAML-D)](https://www.kaggle.com/datasets/berkanoztas/synthetic-transaction-monitoring-dataset-aml)
+Dataset Information
 
-**Research Reference:**
+This project uses the Synthetic Anti-Money Laundering Dataset (SAML-D), following a multi-stage data preparation process.
 
-Oztas et al., *Enhancing Anti-Money Laundering: Development of a Synthetic Transaction Monitoring Dataset*, IEEE ICEBE 2023.
+1. Original Dataset
 
-### Dataset Information
+The original SAML-D dataset contains approximately 9,504,852 synthetic financial transactions and was used as the primary data source for this project.
 
-The original SAML-D dataset contains approximately 9.5 million synthetic transactions.
+2. Selected Dataset (100K Transactions)
 
-This project uses a cleaned and feature-engineered dataset derived from the source dataset.
+A subset of 100,000 transactions was selected from the original dataset to be used in the project.
 
-| Property | Value |
-|---|---|
-| Processed dataset shape before cleaning | 97,066 rows × 14 columns |
-| Dataset shape after cleaning | 97,065 rows × 14 columns |
-| Target variable | `Is_laundering` |
-| Classification type | Binary Classification |
-| Class 0 | Legitimate |
-| Class 1 | Laundering |
+3. Feature-Engineered Dataset
 
-### Target Distribution
+The selected data underwent data preparation and feature engineering, resulting in the following dataset:
 
-After data cleaning:
+Property
 
-| Class | Transactions | Percentage |
-|---|---:|---:|
-| Legitimate (0) | 74,585 | 76.84% |
-| Laundering (1) | 22,480 | 23.16% |
-| **Total** | **97,065** | **100%** |
+Value
 
-The dataset presents a class imbalance, making Precision, Recall, and F1-score important evaluation metrics.
+Selected dataset
 
-### Target Variable
+100,000 transactions
 
-`Is_laundering` is the binary target variable:
+Processed dataset (before final cleaning)
 
-- `0`: Legitimate transaction.
-- `1`: Money laundering transaction.
+97,066 rows × 14 columns
+
+Final dataset (after cleaning)
+
+97,065 rows × 14 columns
+
+Target variable
+
+Is_laundering
+
+Task
+
+Binary Classification
+
+Final Target Distribution
+
+Class
+
+Transactions
+
+Percentage
+
+Legitimate (0)
+
+74,585
+
+76.84%
+
+Laundering (1)
+
+22,480
+
+23.16%
+
+Total
+
+97,065
+
+100%
+
+The final processed dataset was used for model training, validation, and testing.
+
+Dataset Source
+
+Kaggle: Synthetic Transaction Monitoring Dataset (AML)
+
+Research Paper: Oztas et al., Enhancing Anti-Money Laundering: Development of a Synthetic Transaction Monitoring Dataset, IEEE ICEBE 2023.
 
 ## Methodology
 
