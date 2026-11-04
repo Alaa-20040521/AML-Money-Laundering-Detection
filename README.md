@@ -31,81 +31,44 @@ The models were compared using evaluation metrics suitable for imbalanced classi
 - Optimize decision thresholds based on validation performance.
 - Evaluate the selected model on a separate test set.
 
-## Dataset
+## Dataset Information
 
-Dataset Information
+This project uses the **Synthetic Anti-Money Laundering Dataset (SAML-D)**, following a multi-stage data preparation process.
 
-This project uses the Synthetic Anti-Money Laundering Dataset (SAML-D), following a multi-stage data preparation process.
+**1. Original Dataset**
 
-1. Original Dataset
+The original SAML-D dataset contains approximately **9,504,852 synthetic financial transactions** and was used as the primary data source for this project.
 
-The original SAML-D dataset contains approximately 9,504,852 synthetic financial transactions and was used as the primary data source for this project.
+**2. Selected Dataset (100K Transactions)**
 
-2. Selected Dataset (100K Transactions)
+A subset of **100,000 transactions** was selected from the original dataset to be used in the project.
 
-A subset of 100,000 transactions was selected from the original dataset to be used in the project.
-
-3. Feature-Engineered Dataset
+**3. Feature-Engineered Dataset**
 
 The selected data underwent data preparation and feature engineering, resulting in the following dataset:
 
-Property
+| Property | Value |
+|---|---:|
+| Selected dataset | 100,000 transactions |
+| Processed dataset (before final cleaning) | 97,066 rows × 14 columns |
+| Final dataset (after cleaning) | 97,065 rows × 14 columns |
+| Target variable | `Is_laundering` |
+| Task | Binary Classification |
 
-Value
+**Final Target Distribution**
 
-Selected dataset
-
-100,000 transactions
-
-Processed dataset (before final cleaning)
-
-97,066 rows × 14 columns
-
-Final dataset (after cleaning)
-
-97,065 rows × 14 columns
-
-Target variable
-
-Is_laundering
-
-Task
-
-Binary Classification
-
-Final Target Distribution
-
-Class
-
-Transactions
-
-Percentage
-
-Legitimate (0)
-
-74,585
-
-76.84%
-
-Laundering (1)
-
-22,480
-
-23.16%
-
-Total
-
-97,065
-
-100%
+| Class | Transactions | Percentage |
+|---|---:|---:|
+| Legitimate (0) | 74,585 | 76.84% |
+| Laundering (1) | 22,480 | 23.16% |
+| **Total** | **97,065** | **100%** |
 
 The final processed dataset was used for model training, validation, and testing.
 
-Dataset Source
+**Dataset Source**
 
-Kaggle: Synthetic Transaction Monitoring Dataset (AML)
-
-Research Paper: Oztas et al., Enhancing Anti-Money Laundering: Development of a Synthetic Transaction Monitoring Dataset, IEEE ICEBE 2023.
+- Kaggle: [Synthetic Transaction Monitoring Dataset (AML)](https://www.kaggle.com/datasets/berkanoztas/synthetic-transaction-monitoring-dataset-aml)
+- Research Paper: Oztas et al., *Enhancing Anti-Money Laundering: Development of a Synthetic Transaction Monitoring Dataset*, IEEE ICEBE 2023.
 
 ## Methodology
 
