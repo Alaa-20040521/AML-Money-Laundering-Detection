@@ -1,53 +1,294 @@
-# Anti-Money Laundering (AML) Transaction Classifier
+# Anti-Money Laundering (AML) Transaction Classification
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Framework: Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.3+-orange.svg)](https://scikit-learn.org/)
-[![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![Scikit-learn](https://img.shields.io/badge/Scikit--learn-Machine%20Learning-orange)
+![XGBoost](https://img.shields.io/badge/Model-XGBoost-blue)
+![CatBoost](https://img.shields.io/badge/Model-CatBoost-yellow)
+![Status](https://img.shields.io/badge/Status-Model%20Evaluation-success)
 
-## Project Overview & Objectives
+## Project Overview
 
-Financial institutions process millions of high-throughput payments daily, where illicit actors disguise illegitimate capital flows through layered, complex payment rails. This project develops a high-performance machine learning classification system tailored to flag suspicious money laundering transactions across multi-currency settlement channels. The primary objective is to resolve severe class imbalance ($0.104\%$ positive prevalence) to maximize true-positive recall on critical illicit typologies while enforcing low false-positive alert volumes to sustain compliance operational efficiency.
+Money laundering detection is a major challenge for financial institutions due to the complexity and diversity of suspicious financial transactions.
+
+This project aims to develop a machine learning-based classification approach to identify potentially suspicious transactions and distinguish them from legitimate financial activities.
+
+Using the Synthetic Anti-Money Laundering Dataset (SAML-D), the project explores data preprocessing, feature engineering, and machine learning classification techniques.
+
+Three machine learning models were developed and evaluated:
+
+- Random Forest
+- XGBoost
+- CatBoost
+
+The models were compared using evaluation metrics suitable for imbalanced classification, with particular attention to Precision, Recall, F1-score, PR-AUC, and ROC-AUC.
+
+## Project Objectives
+
+- Analyze and preprocess financial transaction data.
+- Investigate potential target leakage and select relevant features.
+- Apply feature engineering techniques to improve model input representation.
+- Train and compare multiple machine learning classifiers.
+- Optimize decision thresholds based on validation performance.
+- Evaluate the selected model on a separate test set.
+
+## Dataset
+
+**Source:** [Kaggle – Synthetic Transaction Monitoring Dataset (SAML-D)](https://www.kaggle.com/datasets/berkanoztas/synthetic-transaction-monitoring-dataset-aml)
+
+**Research Reference:**
+
+Oztas et al., *Enhancing Anti-Money Laundering: Development of a Synthetic Transaction Monitoring Dataset*, IEEE ICEBE 2023.
+
+### Dataset Information
+
+The original SAML-D dataset contains approximately 9.5 million synthetic transactions.
+
+This project uses a cleaned and feature-engineered dataset derived from the source dataset.
+
+| Property | Value |
+|---|---|
+| Processed dataset shape before cleaning | 97,066 rows × 14 columns |
+| Dataset shape after cleaning | 97,065 rows × 14 columns |
+| Target variable | `Is_laundering` |
+| Classification type | Binary Classification |
+| Class 0 | Legitimate |
+| Class 1 | Laundering |
+
+### Target Distribution
+
+After data cleaning:
+
+| Class | Transactions | Percentage |
+|---|---:|---:|
+| Legitimate (0) | 74,585 | 76.84% |
+| Laundering (1) | 22,480 | 23.16% |
+| **Total** | **97,065** | **100%** |
+
+The dataset presents a class imbalance, making Precision, Recall, and F1-score important evaluation metrics.
+
+### Target Variable
+
+`Is_laundering` is the binary target variable:
+
+- `0`: Legitimate transaction.
+- `1`: Money laundering transaction.
+
+## Methodology
+
+The project follows a structured machine learning workflow.
+
+### 1. Data Cleaning
+
+- Removed duplicate records.
+- Handled missing target values.
+- Validated binary target labels.
+- Converted Boolean-like features into numerical values.
+- Converted transaction amounts into numeric format and handled negative values.
+
+### 2. Leakage Investigation
+
+Potential target leakage was investigated before model training.
+
+The following features were excluded:
+
+- `Laundering_type`: Excluded because it contains typological information strongly associated with the target label.
+- `Sender_frequancy`
+- `Reciever_frequancy`
+- `hour`: Excluded after generating cyclical time features.
+
+### 3. Feature Engineering
+
+Cyclical encoding was applied to the transaction hour using sine and cosine transformations:
+
+- `hour_sin`
+- `hour_cos`
+
+The `Amount` feature was also converted to numeric format and clipped at zero to prevent negative values.
+
+### 4. Feature Selection
+
+The final model input contains 11 features:
+
+**Numerical Features**
+- `Amount`
+- `is_payment_same`
+- `is_bank_same_location`
+- `hour_sin`
+- `hour_cos`
+
+**Categorical Features**
+- `Day`
+- `Payment_currency`
+- `Received_currency`
+- `Sender_bank_location`
+- `Receiver_bank_location`
+- `Payment_type`
+
+The target variable and excluded leakage-related features were not included in the model inputs.
+
+### 5. Data Splitting
+
+The dataset was divided into three subsets using stratified sampling:
+
+| Dataset | Percentage |
+|---|---:|
+| Training | 60% |
+| Validation | 20% |
+| Testing | 20% |
+
+A fixed random state (`42`) was used to ensure reproducibility.
+
+### 6. Preprocessing
+
+A Scikit-learn preprocessing pipeline was implemented:
+
+- Numerical features: Missing values handled using median imputation.
+- Categorical features: Missing values handled using most-frequent imputation.
+- Categorical encoding: One-Hot Encoding.
+- `ColumnTransformer` and `Pipeline` were used to integrate preprocessing with model training.
+
+## Machine Learning Models
+
+Three classification algorithms were trained and evaluated:
+
+| Model | Configuration |
+|---|---|
+| Random Forest | 200 estimators, balanced class weights |
+| XGBoost | 300 estimators, maximum depth 5, learning rate 0.05 |
+| CatBoost | 800 iterations, depth 6, learning rate 0.03, balanced class weights |
+
+CatBoost was trained using One-Hot Encoded categorical features within the preprocessing pipeline.
+
+## Model Selection & Threshold Optimization
+
+Instead of relying only on the default classification threshold of 0.50, a threshold optimization process was conducted using the validation set.
+
+The selection strategy prioritized:
+
+- A minimum Recall of 0.75.
+- Maximum Precision among thresholds satisfying the Recall requirement.
+- F1-score as a secondary comparison metric.
+
+### Validation Results
+
+| Model | Selected Threshold | Precision | Recall | F1-score |
+|---|---:|---:|---:|---:|
+| CatBoost | **0.57** | **0.6611** | 0.7551 | **0.7050** |
+| XGBoost | 0.26 | 0.5911 | 0.7636 | 0.6663 |
+| Random Forest | 0.28 | 0.5588 | **0.7738** | 0.6489 |
+
+CatBoost achieved the highest Precision and F1-score among the evaluated models while satisfying the minimum Recall requirement.
+
+Therefore, CatBoost was selected for final test evaluation.
+
+## Final Model Evaluation
+
+The selected CatBoost model was evaluated on the test set using the selected threshold of `0.57`.
+
+### Test Results
+
+| Metric | Score |
+|---|---:|
+| Accuracy | 85.89% |
+| Precision | 66.69% |
+| Recall | 78.02% |
+| F1-score | 71.91% |
+| PR-AUC (Average Precision) | 75.83% |
+| ROC-AUC | 92.54% |
+
+### Confusion Matrix
+
+| Actual / Predicted | Legitimate | Laundering |
+|---|---:|---:|
+| Legitimate | 13,165 | 1,752 |
+| Laundering | 988 | 3,508 |
+
+The selected model detected 3,508 laundering transactions in the test set, while 988 laundering transactions were classified as legitimate.
+
+## Technologies & Libraries
+
+- Python
+- Pandas
+- NumPy
+- Scikit-learn
+- XGBoost
+- CatBoost
+- Matplotlib
+- Google Colab
+- Jupyter Notebook
+
+## Project Structure
+
+```text
+AML-Money-Laundering-Detection/
+│
+├── README.md
+├── requirements.txt
+├── .gitignore
+│
+├── data/
+│   └── README.md
+│
+├── notebooks/
+│   └── AML_Model_Training_and_Evaluation.ipynb
+│
+├── src/
+│   └── README.md
+│
+├── results/
+│   ├── figures/
+│   └── README.md
+│
+└── docs/
+    └── README.md
+```
+
+## Installation & Usage
+
+Clone the repository:
+
+```bash
+git clone https://github.com/money-laundering-detector/AML-Money-Laundering-Detection.git
+
+cd AML-Money-Laundering-Detection
+```
+
+Install the required libraries:
+
+```bash
+pip install -r requirements.txt
+```
+
+Open the notebook using Jupyter:
+
+```bash
+jupyter notebook
+```
+
+The processed dataset should be obtained from the project team or its documented source and placed in the appropriate location before running the notebook.
+
+## Limitations & Future Improvements
+
+- The dataset is synthetic and may not fully represent real-world financial transaction patterns.
+- Further evaluation on real-world or independently generated transaction datasets is required.
+- Additional feature engineering may improve detection performance.
+- Native categorical feature handling in CatBoost can be investigated.
+- Hyperparameter optimization can be explored.
+- Model explainability techniques such as SHAP can be applied to understand feature contributions.
+- Further threshold analysis can help balance fraud detection sensitivity and false-positive alerts.
 
 ## Contributors
 
-| Name | major | Contact |
-| :--- | :--- | :--- |
-| [Ala'a Yahia Almousa ] | Data Science and Artificial Intelligence | [https://github.com/Alaa-20040521 / alaayahia693@gmail.com] |
-| [Abdellrahman Abdallah Alhanaqtah] | Intelligent Systems Engineering | [hanaqtahabdellrahman@gmail.com / https://github.com/abdellrahmanHq] |
-| [Rana Kamel Khaleel Jumah] | Computer Science | [https://github.com/rana03jumah  / rana03jumah@gmail.com] |
-| [abdullah anas zahran ] | computer information system | [ abdullahzahran36@gmail.com / https://github.com/abdullahzahran36 ] |
-| [ ليث سامي اسماعيل الحواجرة ] |  ذكاء اصطناعي وعلم بيانات (AI & DS) | [ laith.alhawjreh@gmail.com / https://github.com/Laith-Alhawajreh ] |
-| [ Obaeda Majde Abu Baker ] | [ Computer Science ] | [ https://github.com/Obaedamjde ] |
-| [ Oula Saleem Hanandeh ] | Data science & Artificial intelligence | [ olasaleemhanandeh@gmail.com / https://github.com/olasaleemhanandeh-ux]
-## Dataset Specifications
+| Name | Major | GitHub |
+|---|---|---|
+| Ala'a Yahia Almousa | Data Science and Artificial Intelligence | [Alaa-20040521](https://github.com/Alaa-20040521) |
+| Abdellrahman Abdallah Alhanaqtah | Intelligent Systems Engineering | [abdellrahmanHq](https://github.com/abdellrahmanHq) |
+| Rana Kamel Khaleel Jumah | Computer Science | [rana03jumah](https://github.com/rana03jumah) |
+| Abdullah Anas Zahran | Computer Information Systems | [abdullahzahran36](https://github.com/abdullahzahran36) |
+| Laith Sami Ismail Alhawajreh | Artificial Intelligence and Data Science | [Laith-Alhawajreh](https://github.com/Laith-Alhawajreh) |
+| Obaeda Majde Abu Baker | Computer Science | [Obaedamjde](https://github.com/Obaedamjde) |
+| Oula Saleem Hanandeh | Data Science and Artificial Intelligence | [olasaleemhanandeh-ux](https://github.com/olasaleemhanandeh-ux) |
 
-* **Source:** [Kaggle — Anti Money Laundering Transaction Data (SAML-D)](https://www.kaggle.com/datasets/berkanoztas/synthetic-transaction-monitoring-dataset-aml)
-* **Citation:** Oztas et al., *"Enhancing Anti-Money Laundering: Development of a Synthetic Transaction Monitoring Dataset,"* IEEE ICEBE 2023.
-* **Dimensions:** $9,504,852$ rows $\times$ $12$ columns (~203 MB compressed / ~890 MB uncompressed CSV)
-* **Target Variable:** `Is_laundering`
-* Class 0 (Legitimate): 75,000 transactions (75.0000%)
-* Class 1 (Illicit): 25,000 transactions (25.0000%)
-* Imbalance Ratio: ≈ 1:3
-* **Dataset File:** [Download the 100K Dataset](./aml_100k_unique_with_all_unique_laundering.csv)
+---
 
-
-
-* Typological Patterns: 28 distinct behavioral transaction archetypes (11 benign commercial patterns and 17 financial crime structures including Fan-In, Fan-Out, Cycling, and Cross-Border structuring).
-
-### Feature Schema
-
-| Column Name | Data Type | Description |
-| :--- | :--- | :--- |
-| `Date` | `date` (`YYYY-MM-DD`) | Transaction settlement date. |
-| `Time` | `time` (`HH:MM:SS`) | Precise timestamp of transaction settlement. |
-| `Sender_account` | `int64` | Unique originating entity account identifier. |
-| `Receiver_account` | `int64` | Unique beneficiary entity account identifier. |
-| `Amount` | `float64` | Transacted nominal volume in source payment currency. |
-| `Payment_currency` | `category` / `string` | Currency initiated by the sender (e.g., `UK pounds`, `USD`). |
-| `Received_currency` | `category` / `string` | Currency settled at the beneficiary (flags FX conversion disparities). |
-| `Sender_bank_location` | `category` / `string` | Domicile jurisdiction of sender entity. |
-| `Receiver_bank_location` | `category` / `string` | Domicile jurisdiction of recipient institution. |
-| `Payment_type` | `category` / `string` | Settlement rail (`ACH`, `Cross-border`, `Cheque`, `Cash Deposit`, `Debit card`). |
-| `Is_laundering` | `int64` | **Target Variable**: Ground-truth label (`0` = Normal, `1` = Laundering). |
-| `Laundering_type` | `category` / `string` | Latent typological category (*withheld during training to prevent target leakage*). |
+**Disclaimer:** This project is developed for educational and research purposes using synthetic transaction data. It is not intended to replace established financial institution compliance systems or regulatory procedures.
