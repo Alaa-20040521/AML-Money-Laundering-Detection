@@ -301,12 +301,10 @@ AML-Money-Laundering-Detection/
 │   ├── Data_Understanding_and_Exploratory_Data_Analysis.ipynb
 │   ├── Feature_Engineering_and_Preprocessing.ipynb
 │   └── AML_Model_Training_and_Evaluation_Organized.ipynb
+|   └── README.md
 │
-├── src/
-│   └── README.md
 │
 ├── results/
-│   ├── figures/
 │   └── README.md
 │
 └── docs/
@@ -367,12 +365,10 @@ The Feature Engineering notebook generates the prepared datasets and preprocessi
 | Name | Major | GitHub |
 |---|---|---|
 | Ala'a Yahia Almousa | Data Science and Artificial Intelligence | [Alaa-20040521](https://github.com/Alaa-20040521) |
-| Abdellrahman Abdallah Alhanaqtah | Intelligent Systems Engineering | [abdellrahmanHq](https://github.com/abdellrahmanHq) |
-| Rana Kamel Khaleel Jumah | Computer Science | [rana03jumah](https://github.com/rana03jumah) |
+| Oula Saleem Hanandeh | Data Science and Artificial Intelligence | [olasaleemhanandeh-ux](https://github.com/olasaleemhanandeh-ux) |
 | Abdullah Anas Zahran | Computer Information Systems | [abdullahzahran36](https://github.com/abdullahzahran36) |
 | Laith Sami Ismail Alhawajreh | Artificial Intelligence and Data Science | [Laith-Alhawajreh](https://github.com/Laith-Alhawajreh) |
-| Obaeda Majde Abu Baker | Computer Science | [Obaedamjde](https://github.com/Obaedamjde) |
-| Oula Saleem Hanandeh | Data Science and Artificial Intelligence | [olasaleemhanandeh-ux](https://github.com/olasaleemhanandeh-ux) |
+| Rana Kamel Khaleel Jumah | Computer Science | [rana03jumah](https://github.com/rana03jumah) |
 
 ## Disclaimer
 
