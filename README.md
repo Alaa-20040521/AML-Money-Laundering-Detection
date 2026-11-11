@@ -368,8 +368,6 @@ The Feature Engineering notebook generates the prepared datasets and preprocessi
 | Oula Saleem Hanandeh | Data Science and Artificial Intelligence | [olasaleemhanandeh-ux](https://github.com/olasaleemhanandeh-ux) |
 | Abdullah Anas Zahran | Computer Information Systems | [abdullahzahran36](https://github.com/abdullahzahran36) |
 | Laith Sami Ismail Alhawajreh | Artificial Intelligence and Data Science | [Laith-Alhawajreh](https://github.com/Laith-Alhawajreh) |
-| Rana Kamel Khaleel Jumah | Computer Science | [rana03jumah](https://github.com/rana03jumah) |
-
 ## Disclaimer
 
 This project was developed for educational and research purposes using synthetic transaction data. It is not intended to replace established financial institution compliance systems, professional investigations, or regulatory procedures.
